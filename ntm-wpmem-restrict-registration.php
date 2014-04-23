@@ -38,6 +38,22 @@ $ntmrr_blacklisted_emails = array(
 );
 
 /*************************************/
+/******* Other User Variables ********/
+/*************************************/
+//This message appears above the WP-Members registration form.
+//Useful for telling them their email address needs to be from certain domains or be "pre-approved"
+$registration_form_message = "<p style='padding: 10px; background-color: #ff6; border: 2px solid #aa4;'>The email address you use must be on the pre-approved list pre-approved</p>";
+
+//This is the error message that appears when attempting to register using an unapproved email address
+//If the redirect option below is used, this will not be used.
+$email_not_approved_message = "<p style='line-height: 120%; text-align: left; padding: 0 5px; font-weight: normal;'>We're sorry. You are using an E-mail address that has not been pre-approved.</p>";
+
+//To redirect on error instead of showing a message, set $redirect_on_unapproved_email to true
+//Be sure to use valid url (ie 'https://' . $_SERVER['SERVER_NAME'] . '/YOUR-FAILURE-PAGE/')
+$redirect_on_unapproved_email = false;
+$redirect_on_unapproved_email_url = 'https://' . $_SERVER['SERVER_NAME'] . '/YOUR-FAILURE-PAGE/';
+
+/*************************************/
 /**** DO NOT EDIT BELOW THIS LINE ****/
 /*(unless you know what you're doing)*/
 /*************************************/
@@ -77,46 +93,59 @@ function ntmrr_is_whitelisted($user_email) { //Helper Function: Checks whether $
 	return false; //No matches. Email is not whitelisted
 }
 
-//This function checks the registered email against the blacklist and whitelist, and throws the appropriate errors
+//On native WP registration, check the registered email against the blacklist and whitelist, and throw appropriate error or redirects
+//Shouldn't be needed since Native registration should be turned off, but this is here to plug any security holes.
 function ntmrr_validate_email_default($errors, $sanitized_user_login, $user_email) {
-
+	global $email_not_approved_message, $redirect_on_unapproved_email, $redirect_on_unapproved_email_url;
+	
 	$sanitary_email = filter_var($user_email, FILTER_VALIDATE_EMAIL);
 	if( ntmrr_is_blacklisted($sanitary_email) || !ntmrr_is_whitelisted($sanitary_email) ) {
-		//If the E-mail is on the blacklist or is not on the whitelist, throw an error
-		$errors->add('ntmrr-email-error', "We're sorry. You are using an E-mail address that has not been pre-approved.");
-		return $errors;
+		//If the E-mail is on the blacklist or isn't on the whitelist \...
+		if($redirect_on_unapproved_email) {
+			//Redirect if that option is chosen
+			header('Location: ' . $redirect_on_unapproved_email_url);
+			die();
+		} else {
+			//If redirect not turned on, throw an error
+			$errors->add('ntmrr-email-error', $email_not_approved_message);
+			return $errors;
+		}
 	} else {
-		return $errors; //Otherwise, exit this function without throwing any new errors
+		//Otherwise, exit this function without throwing any new errors
+		return $errors;
 	}
 }
 add_filter('registration_errors', 'ntmrr_validate_email_default', 10, 3);
 
-//This function does the same thing as ntmrr_validate_email_default, but only applies if the wp-members plugin is used
+//For wp-members registration, check the registered email against the blacklist and whitelist, and throw appropriate error or redirects
 function ntmrr_validate_email_wpmem($fields) { 
-	//global $wpmem_themsg;
+	global $email_not_approved_message, $redirect_on_unapproved_email, $redirect_on_unapproved_email_url;
 	$user_email = $fields['user_email'];
 
 	$sanitary_email = filter_var($user_email, FILTER_VALIDATE_EMAIL);
-	if( ntmrr_is_blacklisted($sanitary_email) || !ntmrr_is_whitelisted($sanitary_email) ) { //If the E-mail is on the blacklist or is not on the whitelist...
-		//New way: redirect to the registration request form
-		header('Location: https://' . $_SERVER['SERVER_NAME'] . '/YOUR-FAILURE-PAGE/');
-		die();
-		
-		/*Old way: throw an error
-		$wpmem_themsg = "<p style='line-height: 120%; text-align: left; padding: 0 5px; font-weight: normal;'>YOUR FAILURE MESSAGE HERE</p>";
-		return $wpmem_themsg;
-		*/
+	if( ntmrr_is_blacklisted($sanitary_email) || !ntmrr_is_whitelisted($sanitary_email) ) { 
+		//If the E-mail is on the blacklist or is not on the whitelist...
+		if($redirect_on_unapproved_email) {
+			//Redirect if that option is chosen
+			header('Location: ' . $redirect_on_unapproved_email_url);
+			die();
+		} else {
+			// throw an error
+			$wpmem_themsg = $email_not_approved_message;
+			return $wpmem_themsg;
+		}
 	} else { 
-		return false; //Otherwise, exit this function without throwing any new errors
+		//Otherwise, exit this function without throwing any new errors
+		return false;
 	}
 	
 }
 add_action( 'wpmem_pre_register_data', 'ntmrr_validate_email_wpmem' );
 
 
-//This function adds the text that appears above the registration form (when WP-Members plugin is active)
+//For WP-Members Registration form, add the text that appears above the form
 function ntmrr_registration_requirements($content) {
-	return $content . "<p style='padding: 10px; background-color: #ff6; border: 2px solid #aa4;'>YOUR MESSAGE HERE</p>";
+	return $content . $registration_form_message;
 }
 add_filter( 'wpmem_register_form_before', 'ntmrr_registration_requirements');
 
