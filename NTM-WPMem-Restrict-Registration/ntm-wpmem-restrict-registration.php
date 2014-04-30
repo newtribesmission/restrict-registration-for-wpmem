@@ -28,9 +28,7 @@ Version: 1.2
 /************************************/
 
 //Load user options
-require_once('options.php');
-
-
+require_once(plugin_dir_path(__FILE__) . 'options.php');
 
 function ntmrr_is_blacklisted($user_email) { //Helper Function: Checks whether $user_email is on the blacklist
 	//Requires exact match. *'s are not seen as wildcards
