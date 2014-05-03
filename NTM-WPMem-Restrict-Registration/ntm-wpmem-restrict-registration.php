@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: NTM Restricted Registration
+Plugin Name: Restrict Registration for WP-Members
 Description: Restricts registration to email addresses listed within the options file (edit the options.php file to add/remove/edit email addresses or domains). Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist
 Author: New Tribes Mission (Stephen Narwold)
 Plugin URI: https://github.com/newtribesmission/NTM-WPMem-Restrict-Registration
