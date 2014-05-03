@@ -1,5 +1,5 @@
-NTM Restricted Registration for WP-Members
-==========================================
+Restrict Registration for WP-Members
+====================================
 
 Author: New Tribes Mission (Stephen Narwold)
 WordPress Plugin for use in conjunction with WP-Members. Assumes WP native registration is turned off.
