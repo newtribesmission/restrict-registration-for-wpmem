@@ -1,10 +1,10 @@
-=== Restrict Registration for WP-Members ===
+=== Restrict Registration By Email for WP-Members ===
 Contributors: stevish
 Donate link: http://ntm.org/give
 Tags: email, registration, verify email, wpmembers, blacklist, whitelist
 Requires at least: 3.5
 Tested up to: 3.9
-Stable tag: 1.3
+Stable tag: 1.3.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Restricts registration to email addresses listed within the options file. Assume
 
 == Description ==
 
-Restricts registration to email addresses listed within the options file (edit options.php to add/remove/edit email addresses or domains). Assumes WP native registration is turned off. Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist.
+Restricts registration to email addresses listed within the options file (edit options.php to add/remove/edit email addresses or domains). Assumes WP Members is installed and active, and WP native registration is turned off. Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist.
 
 == Installation ==
 
@@ -75,8 +75,14 @@ For security, this plugin will stop any registration attempts from unapproved em
 
 == Changelog ==
 
-= 1.2 =
+= 1.4 =
 * Initial WP Release
+* Moved/Renamed files
+* Added WordPress Friendly readme.txt
+* Fix "plugin breaks everything if options.php is missing"
+
+= 1.3 =
+* Initial Public release
 
 == Upgrade Notice ==
 
