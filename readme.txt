@@ -4,7 +4,7 @@ Donate link: http://ntm.org/give
 Tags: email, registration, verify email, wpmembers, blacklist, whitelist
 Requires at least: 3.5
 Tested up to: 3.9
-Stable tag: 1.3.1
+Stable tag: 1.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,5 +86,5 @@ For security, this plugin will stop any registration attempts from unapproved em
 
 == Upgrade Notice ==
 
-= 1.2 =
+= 1.4 =
 Please update to the newest version
