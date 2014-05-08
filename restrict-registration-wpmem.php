@@ -3,8 +3,8 @@
 Plugin Name: Restrict Registration By Email for WP-Members
 Description: Restricts registration to email addresses listed within the options file (edit the options.php file to add/remove/edit email addresses or domains). Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist
 Author: New Tribes Mission (Stephen Narwold)
-Plugin URI: https://github.com/newtribesmission/NTM-WPMem-Restrict-Registration
-Version: 1.4
+Plugin URI: http://wordpress.org/plugins/restrict-registration-for-wp-members/
+Version: 1.4.1
 
     Copyright (C) 2014 New Tribes Mission
 
@@ -78,7 +78,7 @@ if ( file_exists(plugin_dir_path(__FILE__) . 'options.php') ) {
 			//If the E-mail is on the blacklist or isn't on the whitelist \...
 			if($redirect_on_unapproved_email) {
 				//Redirect if that option is chosen
-				header('Location: ' . $redirect_on_unapproved_email_url);
+				header('Location: ' . $redirect_on_unapproved_email_url . '?ntmrr_error=not-approved');
 				die();
 			} else {
 				//If redirect not turned on, throw an error
@@ -102,7 +102,7 @@ if ( file_exists(plugin_dir_path(__FILE__) . 'options.php') ) {
 			//If the E-mail is on the blacklist or is not on the whitelist...
 			if($redirect_on_unapproved_email) {
 				//Redirect if that option is chosen
-				header('Location: ' . $redirect_on_unapproved_email_url);
+				header('Location: ' . $redirect_on_unapproved_email_url . '?ntmrr_error=not-approved');
 				die();
 			} else {
 				// throw an error
@@ -120,12 +120,14 @@ if ( file_exists(plugin_dir_path(__FILE__) . 'options.php') ) {
 
 	//For WP-Members Registration form, add the text that appears above the form
 	function ntmrr_registration_requirements($content) {
+		global $registration_form_message;
 		return $content . $registration_form_message;
 	}
 	add_filter( 'wpmem_register_form_before', 'ntmrr_registration_requirements');
 
+	
+	//Increases the scope of the WP Members Plugin. Stops blocked pages from showing up in search results, archive pages, recent post lists, etc
 	function ntmrr_increase_wpmem_to_secondary_actions($where) {
-		//Increases the scope of the WP Members Plugin. Stops blocked pages from showing up in search results, archive pages, recent post lists, etc
 		global $wpdb;
 		if(!is_user_logged_in() && (is_search() || is_feed() || is_archive() || !is_singular() || is_front_page())) { //Does not fire if user is logged in or the page is being accessed directly. WP-Members will handle the direct access requests.
 			//Adds to any query that is accessing posts:
@@ -144,6 +146,17 @@ if ( file_exists(plugin_dir_path(__FILE__) . 'options.php') ) {
 		return $where;
 	}
 	add_filter('posts_where', 'ntmrr_increase_wpmem_to_secondary_actions');
+	
+	
+	//[ntmrr_registration_error] Shortcode to display error message on redirected page
+	function ntmrr_sc_redirect_error($atts) {
+		global $email_not_approved_message;
+		if ($_GET['ntmrr_error'] == 'not-approved' && count($_POST) == 0) {
+			//If the GET variable is set AND there is no POST (comes straight from the redirect)
+			return do_shortcode($email_not_approved_message);
+		}
+	}
+	add_shortcode( 'ntmrr_registration_error', 'ntmrr_sc_redirect_error' );
 	
 } else {
 	//If there was no options.php, show this error:
