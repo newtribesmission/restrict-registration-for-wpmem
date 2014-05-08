@@ -12,7 +12,7 @@ Restricts registration to email addresses listed within the options file. Assume
 
 == Description ==
 
-Restricts registration to email addresses listed within the options file (edit options.php to add/remove/edit email addresses or domains). Assumes WP Members is installed and active, and WP native registration is turned off. Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist.
+Restricts registration to email addresses listed on the options page. Assumes WP Members is installed and active, and WP native registration is turned off. Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist.
 
 If you'd like to present an issue or contribute a fix, the Github repository is located at https://github.com/newtribesmission/NTM-WPMem-Restrict-Registration 
 
@@ -76,6 +76,10 @@ First, edit `wp-content/plugins/ntm-wpmem-restrict-registration/options.php` (if
 For security, this plugin will stop any registration attempts from unapproved email address regardless of how the registration is attempted. However, the error messages and redirects aren't guaranteed to work with the WP naative registration.
 
 == Changelog ==
+
+= 2.0 =
+* Removed options.php in favor of placing options in the database
+* Added admin panel to manage options
 
 = 1.4.1 =
 * Added the [ntmrr_registration_error] shortcode for use on redirect landing page
