@@ -4,7 +4,7 @@ Donate link: http://ntm.org/give
 Tags: email, registration, verify email, wpmembers, blacklist, whitelist
 Requires at least: 3.5
 Tested up to: 3.9
-Stable tag: 2.0
+Stable tag: 2.0.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,9 @@ As of 2.0, from the dashboard, find "Users > Pre-Approve" and follow the directi
 For security, this plugin will stop any registration attempts from unapproved email address regardless of how the registration is attempted. However, the error messages and redirects aren't guaranteed to work with the WP naative registration.
 
 == Changelog ==
+
+= 2.0.1 =
+* Fix Options.php error
 
 = 2.0 =
 * Removed options.php in favor of placing options in the database
