@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Restrict Registration By Email for WP-Members
-Description: Restricts registration to email addresses listed within the options file (edit the options.php file to add/remove/edit email addresses or domains). Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist
+Description: Restricts registration to email addresses listed on the options page. Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist
 Author: New Tribes Mission (Stephen Narwold)
 Plugin URI: http://wordpress.org/plugins/restrict-registration-for-wp-members/
 Version: 1.5
@@ -201,11 +201,13 @@ function ntmrr_options() {
 	$whitelist = esc_textarea(stripslashes(get_option('ntmrr_whitelisted_emails')));
 	$blacklist = esc_textarea(stripslashes(get_option('ntmrr_blacklisted_emails')));
 	?>
-	<div class="wrap">
+	<div class="wrap" id="ntmrr_wrap">
 		<form name="ntmrr_options_form" method="POST" action="">
 		<input type="hidden" name="ntmrr_posted" value="Y" />
+			<h1>Restrict Registration by Email for WP-Members</h1>
+			<p>Restricts registration to email addresses listed on the options page. Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist.</p>
 			<h2>Emails</h2>
-			<div style="width: 49%; float: left;">
+			<div class="whitelist_field">
 				<h3><label for="ntmrr_whitelisted_emails">Email WhiteList</label></h3>
 				<p>These are the <strong>accepted</strong> emails. Users <em>must</em> use an email represented on this list in order to register. Any emails not on this list will be rejected</p>
 				<ul>
@@ -219,9 +221,9 @@ function ntmrr_options() {
 					</ul>
 					</li>
 				</ul>
-				<textarea rows="15" name="ntmrr_whitelisted_emails" style="width: 100%;"><?php echo $whitelist; ?></textarea>
+				<textarea class="ntmrr_input" rows="15" name="ntmrr_whitelisted_emails"><?php echo $whitelist; ?></textarea>
 			</div>
-			<div style="width: 49%; float: right;">
+			<div class="blacklist_field">
 				<h3><label for="ntmrr_whitelisted_emails">Email BlackList</label></h3>
 				<p>These are <strong>blocked</strong> emails. Users who register with emails in this list wil be denied access, even if their emails are on the whitelist</p>
 				<ul>
@@ -231,27 +233,28 @@ function ntmrr_options() {
 					<li>Remember, this overrides the WhiteList.</li>
 					<li>Useful for blocking specific people in approved organizations (like stephen_the_hacker@abc.org)</li>
 				</ul>
-				<textarea rows="15" name="ntmrr_blacklisted_emails" style="width: 100%;"><?php echo $blacklist; ?></textarea>
+				<textarea class="ntmrr_input" rows="15" name="ntmrr_blacklisted_emails"><?php echo $blacklist; ?></textarea>
 			</div>
 			<p class="submit" style="clear: both;">
 				<input type="submit" name="Submit1" class="button-primary" value="Save Changes" />
 			</p>
-			
+			<hr />
 			<h2 style="clear: both;">Options</h2>
-			<label for="ntmrr_registration_form_message">Registration Form Message</label>
+			<h3><label for="ntmrr_registration_form_message">Registration Form Message</label></h3>
 			<p>This message appears above the WP-Members registration form. It is useful for telling them their email address needs to be from certain domains or be "pre-approved".</p>
 			<p>Example: &lt;p&gt;The email address you use must be on the pre-approved list&lt;/p&gt;</p>
-			<input type="text" name="ntmrr_registration_form_message" value="<?php echo $reg_form_msg; ?>" /><br/><br/>
+			<input class="ntmrr_input" type="text" name="ntmrr_registration_form_message" value="<?php echo $reg_form_msg; ?>" /><br/><br/>
 			
-			<label for="ntmrr_email_not_approved_message">"Email Not Approved" Message</label>
+			<h3><label for="ntmrr_email_not_approved_message">"Email Not Approved" Message</label></h3>
 			<p>This is the error message that appears when attempting to register using an unapproved email address.</p>
 			<p>Example: &lt;p&gt;We're sorry. You are using an E-mail address that has not been pre-approved.&lt;/p&gt;</p>
-			<input type="text" name="ntmrr_email_not_approved_message" value="<?php echo $error_msg; ?>" /><br/><br/>
+			<input class="ntmrr_input" type="text" name="ntmrr_email_not_approved_message" value="<?php echo $error_msg; ?>" /><br/><br/>
 			
-			<input type="checkbox" name="ntmrr_redirect_on_unapproved" value="1" <?php echo $redirect ? 'checked' : ''; ?> /><label for="ntmrr_redirect_on_unapproved">Redirect when email is not approved?</label>
+			<h3>Redirect</h3>
+			<strong><input type="checkbox" name="ntmrr_redirect_on_unapproved" value="1" <?php echo $redirect ? 'checked' : ''; ?> /><label for="ntmrr_redirect_on_unapproved">Redirect when email is not approved?</label></strong>
 			<p>To redirect on error instead of just showing a message, check the box and fill in the location below</p>
-			<p>Be sure to use valid url (ie 'https://' . $_SERVER['SERVER_NAME'] . '/YOUR-FAILURE-PAGE/')</p>
-			<label for="ntmrr_redirect_on_unapproved_url">URL to redirect to: </label><input type="text" name="ntmrr_redirect_on_unapproved_url" value="<?php echo $url; ?>" />
+			<p>Be sure to use valid url (ie 'https://yoursite.com/YOUR-FAILURE-PAGE/')</p>
+			<h3><label for="ntmrr_redirect_on_unapproved_url">URL to redirect to: </label></h3><input class="ntmrr_input" type="text" name="ntmrr_redirect_on_unapproved_url" value="<?php echo $url; ?>" />
 			<p>Use [ntmrr_registration_error] on the redirect page to show the error on that page if needed</p><br/>
 			
 			<p class="submit" style="clear: both;">
@@ -265,5 +268,12 @@ function ntmrr_add_options_menu() {
 	add_users_page( 'Restrict Registration By Email', 'Pre-Approve', 'manage_options', 'ntmrr_options_menu', 'ntmrr_options' );
 }
 add_action( 'admin_menu', 'ntmrr_add_options_menu' );
+
+function ntmrr_admin_stylesheet() {
+	if (is_plugin_page()) {
+		echo '<link href="' . plugin_dir_url(__FILE__) . 'ntmrr-admin.css" rel="stylesheet" type="text/css">';
+	}
+}
+add_action('admin_head', 'ntmrr_admin_stylesheet');
 
 ?>
