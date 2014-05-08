@@ -4,7 +4,7 @@ Plugin Name: Restrict Registration By Email for WP-Members
 Description: Restricts registration to email addresses listed on the options page. Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist
 Author: New Tribes Mission (Stephen Narwold)
 Plugin URI: http://wordpress.org/plugins/restrict-registration-for-wp-members/
-Version: 1.5
+Version: 2.0
 
     Copyright (C) 2014 New Tribes Mission
 
@@ -205,7 +205,7 @@ function ntmrr_options() {
 		<form name="ntmrr_options_form" method="POST" action="">
 		<input type="hidden" name="ntmrr_posted" value="Y" />
 			<h1>Restrict Registration by Email for WP-Members</h1>
-			<p>Restricts registration to email addresses listed on the options page. Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist.</p>
+			<p>Restricts registration to email addresses listed in the whitelist. The blacklist will override entries in the whitelist. <strong>Also, be sure native WP registration is turned off</strong></p>
 			<h2>Emails</h2>
 			<div class="whitelist_field">
 				<h3><label for="ntmrr_whitelisted_emails">Email WhiteList</label></h3>
