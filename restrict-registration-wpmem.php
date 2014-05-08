@@ -29,12 +29,13 @@ if ( file_exists(plugin_dir_path(__FILE__) . 'options.php') ) {
 	
 	function ntmrr_is_blacklisted($user_email) { //Helper Function: Checks whether $user_email is on the blacklist
 		//Requires exact match. *'s are not seen as wildcards
-		global $ntmrr_blacklisted_emails;
-
+		$ntmrr_blacklisted_emails = stripslashes(get_option('ntmrr_blacklisted_emails'));
+		$ntmrr_blacklisted_emails = preg_split("/(\r\n|\r|\n)/", $ntmrr_blacklisted_emails);
 
 		foreach($ntmrr_blacklisted_emails as $be) {
-			if($be = filter_var($be, FILTER_VALIDATE_EMAIL)) { //blacklist only accepts exact email addresses. Might as well validate before comparing.
-				if( trim(strtolower($be)) == trim(strtolower($user_email)) ) {
+			$be = trim($be);
+			if($be && $be = filter_var($be, FILTER_VALIDATE_EMAIL)) { //blacklist only accepts exact email addresses. Might as well validate before comparing.
+				if( strtolower($be) == strtolower($user_email) ) {
 					return true; //User Email matched a blacklisted Email. Email is blacklisted
 				}
 			}
@@ -45,11 +46,14 @@ if ( file_exists(plugin_dir_path(__FILE__) . 'options.php') ) {
 
 	function ntmrr_is_whitelisted($user_email) { //Helper Function: Checks whether $user_email is on the whitelist
 		//*'s are seen as wildcards
-		global $ntmrr_accepted_emails;
-		global $ntmrr_blacklisted_emails;
+		$ntmrr_whitelisted_emails = stripslashes(get_option('ntmrr_whitelisted_emails'));
+		$ntmrr_whitelisted_emails = preg_split("/(\r\n|\r|\n)/", $ntmrr_whitelisted_emails);
+		$ntmrr_blacklisted_emails = stripslashes(get_option('ntmrr_blacklisted_emails'));
+		$ntmrr_blacklisted_emails = preg_split("/(\r\n|\r|\n)/", $ntmrr_blacklisted_emails);
 		
-		$ntmrr_accepted_emails = array_diff($ntmrr_accepted_emails, $ntmrr_blacklisted_emails); //first remove any exact matches between the blacklist and whitelist
-		foreach($ntmrr_accepted_emails as $email) {
+		$ntmrr_whitelisted_emails = array_diff($ntmrr_whitelisted_emails, $ntmrr_blacklisted_emails); //first remove any exact matches between the blacklist and whitelist
+		foreach($ntmrr_whitelisted_emails as $email) {
+			$email = trim($email);
 			if($email) { //ignore blank elements
 				$email = preg_quote( trim($email) , '/'); //make the email address into a regex friendly string
 				$email = str_replace('\*', '[^@]*', $email); //turn *'s (now escaped by preg_quote) into regex wildcards
@@ -65,7 +69,9 @@ if ( file_exists(plugin_dir_path(__FILE__) . 'options.php') ) {
 	//On native WP registration, check the registered email against the blacklist and whitelist, and throw appropriate error or redirects
 	//Shouldn't be needed since Native registration should be turned off, but this is here to plug any security holes.
 	function ntmrr_validate_email_default($errors, $sanitized_user_login, $user_email) {
-		global $email_not_approved_message, $redirect_on_unapproved_email, $redirect_on_unapproved_email_url;
+		$email_not_approved_message = stripslashes(get_option('ntmrr_email_not_approved_message'));
+		$redirect_on_unapproved_email = stripslashes(get_option('ntmrr_redirect_on_unapproved'));
+		$redirect_on_unapproved_email_url = stripslashes(get_option('ntmrr_redirect_on_unapproved_url'));
 		
 		$sanitary_email = filter_var($user_email, FILTER_VALIDATE_EMAIL);
 		if( ntmrr_is_blacklisted($sanitary_email) || !ntmrr_is_whitelisted($sanitary_email) ) {
@@ -88,7 +94,9 @@ if ( file_exists(plugin_dir_path(__FILE__) . 'options.php') ) {
 
 	//For wp-members registration, check the registered email against the blacklist and whitelist, and throw appropriate error or redirects
 	function ntmrr_validate_email_wpmem($fields) { 
-		global $email_not_approved_message, $redirect_on_unapproved_email, $redirect_on_unapproved_email_url;
+		$email_not_approved_message = stripslashes(get_option('ntmrr_email_not_approved_message'));
+		$redirect_on_unapproved_email = stripslashes(get_option('ntmrr_redirect_on_unapproved'));
+		$redirect_on_unapproved_email_url = stripslashes(get_option('ntmrr_redirect_on_unapproved_url'));
 		$user_email = $fields['user_email'];
 
 		$sanitary_email = filter_var($user_email, FILTER_VALIDATE_EMAIL);
@@ -114,7 +122,7 @@ if ( file_exists(plugin_dir_path(__FILE__) . 'options.php') ) {
 
 	//For WP-Members Registration form, add the text that appears above the form
 	function ntmrr_registration_requirements($content) {
-		global $registration_form_message;
+		$registration_form_message = stripslashes(get_option('ntmrr_registration_form_message'));
 		return $content . $registration_form_message;
 	}
 	add_filter( 'wpmem_register_form_before', 'ntmrr_registration_requirements');
@@ -144,7 +152,7 @@ if ( file_exists(plugin_dir_path(__FILE__) . 'options.php') ) {
 	
 	//[ntmrr_registration_error] Shortcode to display error message on redirected page
 	function ntmrr_sc_redirect_error($atts) {
-		global $email_not_approved_message;
+		$email_not_approved_message = stripslashes(get_option('ntmrr_email_not_approved_message'));
 		if ($_GET['ntmrr_error'] == 'not-approved' && count($_POST) == 0) {
 			//If the GET variable is set AND there is no POST (comes straight from the redirect)
 			return do_shortcode($email_not_approved_message);
