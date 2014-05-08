@@ -39,11 +39,11 @@ $ntmrr_blacklisted_emails = array(
 $registration_form_message = "<p style='padding: 10px; background-color: #ff6; border: 2px solid #aa4;'>The email address you use must be on the pre-approved list pre-approved</p>";
 
 //This is the error message that appears when attempting to register using an unapproved email address
-//If the redirect option below is used, this will not be used.
 $email_not_approved_message = "<p style='line-height: 120%; text-align: left; padding: 0 5px; font-weight: normal;'>We're sorry. You are using an E-mail address that has not been pre-approved.</p>";
 
-//To redirect on error instead of showing a message, set $redirect_on_unapproved_email to true
+//To redirect on error instead of just showing a message, set $redirect_on_unapproved_email to true
 //Be sure to use valid url (ie 'https://' . $_SERVER['SERVER_NAME'] . '/YOUR-FAILURE-PAGE/')
+//Use [ntmrr_registration_error] on the redirect page to show the error on that page if needed
 $redirect_on_unapproved_email = false;
 $redirect_on_unapproved_email_url = 'https://' . $_SERVER['SERVER_NAME'] . '/YOUR-FAILURE-PAGE/';
 ?>

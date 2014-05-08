@@ -14,6 +14,8 @@ Restricts registration to email addresses listed within the options file. Assume
 
 Restricts registration to email addresses listed within the options file (edit options.php to add/remove/edit email addresses or domains). Assumes WP Members is installed and active, and WP native registration is turned off. Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist.
 
+If you'd like to present an issue or contribute a fix, the Github repository is located at https://github.com/newtribesmission/NTM-WPMem-Restrict-Registration 
+
 == Installation ==
 
 1. Make sure the WP-Members plugin is installed and activated
@@ -59,12 +61,12 @@ First, edit `wp-content/plugins/ntm-wpmem-restrict-registration/options.php` (if
      - $registration_form_message = "&lt;p style='padding: 10px; background-color: #ff6; border: 2px solid #aa4;'&gt;The email address you use must be on the pre-approved list pre-approved&lt;/p&gt;";
 * "Email not approved" message ($email_not_approved_message)
  * This is the error message that appears when attempting to register using an unapproved email address
- * If the redirect option below is used, this will not be used.
  * Example:
      - $email_not_approved_message = "&lt;p style='line-height: 120%; text-align: left; padding: 0 5px; font-weight: normal;'&gt;We're sorry. You are using an E-mail address that has not been pre-approved.&lt;/p&gt;";
 * Redirect on unapproved email ($redirect_on_unapproved_email and $redirect_on_unapproved_email_url)
- * To redirect on error instead of showing a message, set $redirect_on_unapproved_email to true
+ * To redirect on error instead of just showing a message, set $redirect_on_unapproved_email to true
  * Be sure to use valid url (ie 'https://' . $_SERVER['SERVER_NAME'] . '/YOUR-FAILURE-PAGE/')
+ * Use [ntmrr_registration_error] on the redirect page to show the error on that page if needed
  * Example:
      - $redirect_on_unapproved_email = false;
      - $redirect_on_unapproved_email_url = 'https://' . $_SERVER['SERVER_NAME'] . '/YOUR-FAILURE-PAGE/';
@@ -74,6 +76,9 @@ First, edit `wp-content/plugins/ntm-wpmem-restrict-registration/options.php` (if
 For security, this plugin will stop any registration attempts from unapproved email address regardless of how the registration is attempted. However, the error messages and redirects aren't guaranteed to work with the WP naative registration.
 
 == Changelog ==
+
+= 1.4.1 =
+* Added the [ntmrr_registration_error] shortcode for use on redirect landing page
 
 = 1.4 =
 * Initial WP Release
