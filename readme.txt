@@ -14,7 +14,7 @@ Restricts registration to email addresses listed within the options file. Assume
 
 Restricts registration to email addresses listed on the options page. Assumes WP Members is installed and active, and WP native registration is turned off. Includes both whitelist (accepted emails) and blacklist (blocked emails). The blacklist will override entries in the whitelist.
 
-If you'd like to present an issue or contribute a fix, the Github repository is located at https://github.com/newtribesmission/NTM-WPMem-Restrict-Registration 
+If you'd like to present an issue or contribute a fix, the Github repository is located at https://github.com/newtribesmission/Restrict-Registration-for-WPMem
 
 == Installation ==
 
