@@ -87,7 +87,8 @@ function ntmrr_validate_email_default( $errors, $sanitized_user_login, $user_ema
 		//If the E-mail is on the blacklist or isn't on the whitelist \...
 		if ( $redirect_on_unapproved_email ) {
 			//Redirect if that option is chosen
-			header( 'Location: ' . $redirect_on_unapproved_email_url . '?ntmrr_error=not-approved' );
+			$redirect_text = apply_filters( 'ntmrr_redirect_text', 'Location: ' . $redirect_on_unapproved_email_url . '?ntmrr_error=not-approved' );
+			header( $redirect_text );
 			die();
 		} else {
 			//If redirect not turned on, throw an error
@@ -113,7 +114,8 @@ function ntmrr_validate_email_wpmem( $fields ) {
 		//If the E-mail is on the blacklist or is not on the whitelist...
 		if ( $redirect_on_unapproved_email ) {
 			//Redirect if that option is chosen
-			header( 'Location: ' . $redirect_on_unapproved_email_url . '?ntmrr_error=not-approved' );
+			$redirect_text = apply_filters( 'ntmrr_redirect_text', 'Location: ' . $redirect_on_unapproved_email_url . '?ntmrr_error=not-approved' );
+			header( $redirect_text );
 			die();
 		} else {
 			// throw an error
