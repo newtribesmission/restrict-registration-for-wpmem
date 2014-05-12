@@ -4,7 +4,7 @@ Plugin Name: Restrict Registration By Email for WP-Members
 Description: Restricts registration to email addresses listed on the options page. Includes both whitelist ( accepted emails ) and blacklist ( blocked emails ). The blacklist will override entries in the whitelist
 Author: New Tribes Mission ( Stephen Narwold )
 Plugin URI: http://wordpress.org/plugins/restrict-registration-for-wp-members/
-Version: 2.0.1
+Version: 2.0.2
 
 	Copyright ( C ) 2014 New Tribes Mission
 
