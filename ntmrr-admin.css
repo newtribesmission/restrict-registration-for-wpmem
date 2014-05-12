@@ -1,0 +1,13 @@
+#ntmrr_wrap .ntmrr_input {
+	width: 100%;
+}
+
+#ntmrr_wrap .whitelist_field {
+	float: left;
+	width: 49%;
+}
+
+#ntmrr_wrap .blacklist_field {
+	float: right;
+	width: 49%;
+}
