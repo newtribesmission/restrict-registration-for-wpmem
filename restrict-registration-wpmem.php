@@ -91,7 +91,7 @@ function ntmrr_is_whitelisted( $user_email ) {
  * Checks the registered email against the blacklist and whitelist, and throws appropriate error or redirects.
  * Shouldn't be needed since Native registration should be turned off, but this is here to plug any security holes.
  * 
- * @param object $errors The WP Errors object
+ * @param WP_Error $errors The WP Error object
  * @param string $sanitized_user_login
  * @param string $user_email
  * @return object The WP Errors object, with an error if the check failed
