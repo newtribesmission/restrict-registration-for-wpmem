@@ -23,7 +23,12 @@ Version: 2.0.2
 	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-//Helper Function: Checks whether $user_email is on the blacklist
+/**
+ * Function to check whether $user_email is on the blacklist
+ * 
+ * @param string $user_email the actual email to compare against the blacklist
+ * @return bool True if email is blacklisted, false otherwise
+ */
 function ntmrr_is_blacklisted( $user_email ) {
 	//Requires exact match. *'s are not seen as wildcards
 	$ntmrr_blacklisted_emails = stripslashes( get_option( 'ntmrr_blacklisted_emails' ) );
@@ -44,7 +49,12 @@ function ntmrr_is_blacklisted( $user_email ) {
 	return false;
 }
 
-//Helper Function: Checks whether $user_email is on the whitelist
+/**
+ * Function to check whether $user_email is on the whitelist
+ * 
+ * @param string $user_email the actual email to compare against the whitelist
+ * @return bool True if email is whitelisted, false otherwise
+ */
 function ntmrr_is_whitelisted( $user_email ) {
 	//*'s are seen as wildcards
 	$ntmrr_whitelisted_emails = stripslashes( get_option( 'ntmrr_whitelisted_emails' ) );
@@ -75,8 +85,17 @@ function ntmrr_is_whitelisted( $user_email ) {
 	return false;
 }
 
-//On native WP registration, check the registered email against the blacklist and whitelist, and throw appropriate error or redirects
-//Shouldn't be needed since Native registration should be turned off, but this is here to plug any security holes.
+/**
+ * Function to validate email used on native registration.
+ * 
+ * Checks the registered email against the blacklist and whitelist, and throws appropriate error or redirects.
+ * Shouldn't be needed since Native registration should be turned off, but this is here to plug any security holes.
+ * 
+ * @param WP_Error $errors The WP Error object
+ * @param string $sanitized_user_login
+ * @param string $user_email
+ * @return object The WP Errors object, with an error if the check failed
+ */
 function ntmrr_validate_email_default( $errors, $sanitized_user_login, $user_email ) {
 	$email_not_approved_message = stripslashes( get_option( 'ntmrr_email_not_approved_message' ) );
 	$redirect_on_unapproved_email = stripslashes( get_option( 'ntmrr_redirect_on_unapproved' ) );
@@ -102,7 +121,15 @@ function ntmrr_validate_email_default( $errors, $sanitized_user_login, $user_ema
 }
 add_filter( 'registration_errors', 'ntmrr_validate_email_default', 10, 3 );
 
-//For wp-members registration, check the registered email against the blacklist and whitelist, and throw appropriate error or redirects
+/**
+ * Function to validate email used on WP-Members registration form.
+ * 
+ * Checks the registered email against the blacklist and whitelist, and throws appropriate error or redirects.
+ * Shouldn't be needed since Native registration should be turned off, but this is here to plug any security holes.
+ * 
+ * @param array $fields Array of POSTed variables from the WP-Members registration form
+ * @return bool|string False if no errors, the error description otherwise
+ */
 function ntmrr_validate_email_wpmem( $fields ) {
 	$email_not_approved_message = stripslashes( get_option( 'ntmrr_email_not_approved_message' ) );
 	$redirect_on_unapproved_email = stripslashes( get_option( 'ntmrr_redirect_on_unapproved' ) );
@@ -130,16 +157,27 @@ function ntmrr_validate_email_wpmem( $fields ) {
 }
 add_action( 'wpmem_pre_register_data', 'ntmrr_validate_email_wpmem' );
 
-
-//For WP-Members Registration form, add the text that appears above the form
+/**
+ * Adds text above the WP-Members registration form.
+ * 
+ * @param string $content Contains any existing text to display above the registraion form 
+ * @return string original content ($content) followed by the new text set in the options
+ */
 function ntmrr_registration_requirements( $content ) {
 	$registration_form_message = stripslashes( get_option( 'ntmrr_registration_form_message' ) );
 	return $content . $registration_form_message;
 }
 add_filter( 'wpmem_register_form_before', 'ntmrr_registration_requirements' );
 
-
-//Increase the scope of the WP Members Plugin. Stop blocked pages from showing up in search results, archive pages, recent post lists, etc
+/**
+ * Increase the scope of the WP Members Plugin.
+ * 
+ * Stop blocked pages from showing up in search results, archive pages, recent post lists, etc, 
+ * by adding restrictions to the WHERE clause.
+ * 
+ * @param string $where existing WHERE clause from wp_query
+ * @return string original WHERE clause ($where) followed by the new restrictions
+ */
 function ntmrr_increase_wpmem_to_secondary_actions( $where ) {
 	global $wpdb;
 	
@@ -164,8 +202,14 @@ function ntmrr_increase_wpmem_to_secondary_actions( $where ) {
 }
 add_filter( 'posts_where', 'ntmrr_increase_wpmem_to_secondary_actions' );
 
-
-//[ntmrr_registration_error] Shortcode to display error message on redirected page
+/**
+ * [ntmrr_registration_error] Shortcode.
+ * 
+ * Displays error message on the redirected page (Optional)
+ * 
+ * @param array $atts Not used
+ * @return string The error message defined on the options page
+ */
 function ntmrr_sc_redirect_error( $atts ) {
 	$email_not_approved_message = stripslashes( get_option( 'ntmrr_email_not_approved_message' ) );
 	if ( $_GET['ntmrr_error'] == 'not-approved' && count( $_POST ) == 0 ) {
@@ -175,10 +219,13 @@ function ntmrr_sc_redirect_error( $atts ) {
 }
 add_shortcode( 'ntmrr_registration_error', 'ntmrr_sc_redirect_error' );
 
-
-/******************/
-/** Options Page **/
-/******************/
+/**
+ * Options Page.
+ * 
+ * Displays the options page and processes options updates
+ * 
+ * @return null
+ */
 function ntmrr_options() {
 	if ( !current_user_can( 'manage_options' ) ) {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
@@ -265,12 +312,23 @@ function ntmrr_options() {
 	</div>
 	<?php
 }
+
+/**
+ * Adds the options menu as a subpage of "Users"
+ * 
+ * @return null
+ */
 function ntmrr_add_options_menu() {
 	//Add the options menu as "Pre-Approve" under the Users menu in the Admin section
 	add_users_page( 'Restrict Registration By Email', 'Pre-Approve', 'manage_options', 'ntmrr_options_menu', 'ntmrr_options' );
 }
 add_action( 'admin_menu', 'ntmrr_add_options_menu' );
 
+/**
+ * Loads the options page stylesheet if necessary
+ * 
+ * @return null
+ */
 function ntmrr_admin_stylesheet() {
 	//Add ntmrr-admin.css in the <head> if this plugin's page is loaded 
 	if ( is_plugin_page() ) {
